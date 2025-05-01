@@ -9,7 +9,7 @@ async def rizz_handler(ctx):
     """
 
     try:
-        response = create_gemini_client(prompt=final_prompt,file_path="rizz.log")
+        response = create_gemini_client(sys_prompt=final_prompt, user_prompt="rizz me up freaky", file_path="rizz.log", chat_history=[])
     except Exception as e:
         response = "An error occurred while processing your request. Please try again later."
         print(e)

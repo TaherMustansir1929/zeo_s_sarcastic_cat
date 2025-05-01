@@ -1,6 +1,4 @@
-from langchain_core.messages import HumanMessage, AIMessage
-
-from llms.langchain_api import langchain_api
+from llms.llm import create_gemini_client
 from my_prompts.react_prompts import react_prompt
 
 async def react_handler(ctx, msg, chat_histories_google_sdk):
@@ -13,7 +11,7 @@ async def react_handler(ctx, msg, chat_histories_google_sdk):
     final_prompt = f"{react_prompt}\nDiscord member id: {ctx.author.id}"
 
     try:
-        response = await langchain_api(prompt=final_prompt, request=msg, file_path="react.log",
+        response = await create_gemini_client(sys_prompt=final_prompt, user_prompt=msg, file_path="react.log",
                                        chat_history=chat_histories_google_sdk)
 
     except Exception as e:

@@ -9,16 +9,11 @@ from handlers.channel_restriction import channel_restriction_handler
 from handlers.rate import rate_handler
 from handlers.react import react_handler
 from handlers.rizz import rizz_handler
-from handlers.smart_ai import smart_ai_handler
-from handlers.smart_ask import smart_ask_handler
 from handlers.word_counter import word_counter_handler
 from handlers.ask import ask_handler
 from handlers.ai import ai_handler
 
 # Dictionary to store chat history for each user
-chat_histories_ai = {}
-chat_histories_ask = {}
-
 chat_histories_google_sdk = {}
 chat_histories_ai_google_sdk = {}
 
@@ -57,7 +52,7 @@ async def secret_error(ctx, error):
 # -----------------------------MY CUSTOM COMMANDS--------------------------------------
 # -------------------------------------------------------------------------------------
 
-#---------AI CHATBOT COMMANDS-------
+#---------SARCASTIC AI COMMANDS-------
 @bot.command(
     brief="Ask me your stupid questions and Imma reply respectfully 😏🥀",
     help="Ask me your stupid questions and Imma reply respectfully 😏🥀"
@@ -72,7 +67,7 @@ async def ask_error(ctx, error):
         await ctx.reply(f"Please wait {error.retry_after:.2f} seconds before using this command again.")
     await ctx.reply(f"Sorry an error occurred -> {error}")
 
-
+#---------RIZZ COMMAND-------
 @bot.command(
     brief="Spawns a dirty pickup line",
     help="Use this command to generate a dirty sus pickup line"
@@ -87,6 +82,7 @@ async def rizz_error(ctx, error):
         await ctx.send(f"Please wait {error.retry_after:.2f} seconds before using this command again.")
     await ctx.reply(f"Sorry an error occured -> {error}")
 
+#---------PICKUP LINE RATING COMMAND-------
 @bot.command(
     brief="Rates your pickup lines",
     help="Call this command along with your pickup line and it will rate is out of 10"
@@ -134,26 +130,6 @@ async def spam_msg(ctx, *, msg):
 @commands.cooldown(1, 30, commands.BucketType.user)
 async def ai(ctx, *, msg):
     await ai_handler(ctx, msg, chat_histories_ai_google_sdk)
-
-#-----------Smarter LLM CHAT with CHAT HISTORY---------
-@bot.command(
-    brief="Talk to a smarter AI with web search and chat history",
-    help="Use this command to utilize !ai command with additional features like tooling, searching and chat history."
-)
-@commands.cooldown(1, 30, commands.BucketType.user)
-async def smart_ai(ctx, *, msg):
-    await smart_ai_handler(ctx, msg, chat_histories_ai)
-
-#-----------Smarter !ask command with CHAT HISTORY and SEARCH API---------
-@bot.command(
-    brief="Smarter implementation of !ask command",
-    help="Use this command to access !ask command with additional features like tooling, searching and chat history."
-)
-@commands.cooldown(1, 30, commands.BucketType.user)
-async def smart_ask(ctx, *, msg):
-    await ctx.send("started...")
-    await smart_ask_handler(ctx, msg, chat_histories_ask)
-    await ctx.send("ended...")
 
 #-----------REACT to the response given by !smart_ask command---------
 @bot.command(

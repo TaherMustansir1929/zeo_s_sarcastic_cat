@@ -11,7 +11,7 @@ async def rate_handler(ctx, msg):
     """
 
     try:
-        response = create_gemini_client(prompt=final_prompt,request=msg,file_path="rate.log", chat_history=[])
+        response = create_gemini_client(sys_prompt=final_prompt,user_prompt=msg,file_path="rate.log", chat_history=[])
     except Exception as e:
         response = "An error occurred while processing your request. Please try again later."
         print(e)
