@@ -12,7 +12,7 @@ async def react_handler(ctx, msg, chat_histories_google_sdk):
 
     try:
         response = await create_gemini_client(sys_prompt=final_prompt, user_prompt=msg, file_path="react.log",
-                                       chat_history=chat_histories_google_sdk)
+                                       chat_history=chat_histories_google_sdk[user_id])
 
     except Exception as e:
         response = "An error occurred while processing your request. Please try again later."
