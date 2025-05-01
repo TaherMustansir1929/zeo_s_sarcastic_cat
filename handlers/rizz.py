@@ -1,5 +1,5 @@
 from my_prompts.rizz_prompts import rizz_prompt
-from llm import create_gemini_client
+from llms.llm import create_gemini_client
 
 async def rizz_handler(ctx):
 

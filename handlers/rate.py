@@ -1,4 +1,4 @@
-from llm import create_gemini_client
+from llms.llm import create_gemini_client
 from my_prompts.rate_rizz_prompts import rate_prompt
 
 
@@ -11,7 +11,7 @@ async def rate_handler(ctx, msg):
     """
 
     try:
-        response = create_gemini_client(prompt=final_prompt,request=msg,file_path="rate.log")
+        response = create_gemini_client(prompt=final_prompt,request=msg,file_path="rate.log", chat_history=[])
     except Exception as e:
         response = "An error occurred while processing your request. Please try again later."
         print(e)

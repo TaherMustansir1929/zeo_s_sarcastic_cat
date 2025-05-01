@@ -19,6 +19,9 @@ from handlers.ai import ai_handler
 chat_histories_ai = {}
 chat_histories_ask = {}
 
+chat_histories_google_sdk = {}
+chat_histories_ai_google_sdk = {}
+
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 
@@ -56,12 +59,12 @@ async def secret_error(ctx, error):
 
 #---------AI CHATBOT COMMANDS-------
 @bot.command(
-    brief="Ask me any questions. Will reply respectfully",
+    brief="Ask me your stupid questions and Imma reply respectfully 😏🥀",
     help="Ask me your stupid questions and Imma reply respectfully 😏🥀"
 )
 @commands.cooldown(1, 15, commands.BucketType.user)
 async def ask(ctx, *, msg):
-    await ask_handler(ctx, msg)
+    await ask_handler(ctx, msg, chat_histories_google_sdk)
 
 @ask.error
 async def ask_error(ctx, error):
@@ -130,7 +133,7 @@ async def spam_msg(ctx, *, msg):
 )
 @commands.cooldown(1, 30, commands.BucketType.user)
 async def ai(ctx, *, msg):
-    await ai_handler(ctx, msg)
+    await ai_handler(ctx, msg, chat_histories_ai_google_sdk)
 
 #-----------Smarter LLM CHAT with CHAT HISTORY---------
 @bot.command(
@@ -148,7 +151,9 @@ async def smart_ai(ctx, *, msg):
 )
 @commands.cooldown(1, 30, commands.BucketType.user)
 async def smart_ask(ctx, *, msg):
+    await ctx.send("started...")
     await smart_ask_handler(ctx, msg, chat_histories_ask)
+    await ctx.send("ended...")
 
 #-----------REACT to the response given by !smart_ask command---------
 @bot.command(
@@ -157,7 +162,7 @@ async def smart_ask(ctx, *, msg):
 )
 @commands.cooldown(1, 30, commands.BucketType.user)
 async def react(ctx, *, msg):
-    await react_handler(ctx, msg, chat_histories_ask)
+    await react_handler(ctx, msg, chat_histories_google_sdk)
 
 
 bot.run(token, log_handler=handler, log_level=logging.DEBUG)

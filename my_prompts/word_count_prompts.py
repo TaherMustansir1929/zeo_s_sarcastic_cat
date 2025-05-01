@@ -1,4 +1,4 @@
-from llm import create_gemini_client
+from llms.llm import create_gemini_client
 
 
 word_count_prompt = f"""

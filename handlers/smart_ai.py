@@ -1,4 +1,4 @@
-from langchain_api import langchain_api
+from llms.langchain_api import langchain_api
 from langchain_core.messages import HumanMessage, AIMessage
 
 from my_prompts.ai_prompts import ai_prompt
