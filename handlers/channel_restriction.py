@@ -1,4 +1,7 @@
 import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 # Channel where bot commands are allowed
 # Set this to the ID of the channel where you want commands to be allowed
