@@ -40,9 +40,7 @@ def create_gemini_client(
         raise Exception(err_msg)
 
     try:
-        print(
-            "\n-------------------------------------------\nEntering new Agent Executioner chain..."
-        )
+        print("\n-------------------------------------------\n")
         print("running", handler_name)
         # Configure the API key
         genai.configure(api_key=api_key)
@@ -79,7 +77,6 @@ def create_gemini_client(
         log = f"SYSTEM_PROMPT: {enhanced_sys_prompt} HISTORY: {log_history} USER_PROMPT: {user_prompt} RESPONSE: {final_response}"
         log_entry(log, "info", file_path=file_path)
 
-        print("Exiting Agent Executioner chain...")
         return final_response
 
     except Exception as e:

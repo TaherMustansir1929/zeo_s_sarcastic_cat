@@ -35,5 +35,5 @@ async def ask_handler(ctx, msg, chat_histories_google_sdk: dict):
             "An error occurred while processing your request. Please try again later."
         )
         print(e)
-
-    await ctx.reply(response)
+        
+    await ctx.send(response)

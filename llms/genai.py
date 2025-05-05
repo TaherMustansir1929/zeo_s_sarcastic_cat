@@ -1,15 +1,20 @@
 import os
+import time
+
 import google.generativeai as genai
 from dotenv import load_dotenv
+
 # Assuming llms.llm_logging exists and has the log_entry function
 from llms.llm_logging import log_entry
+
 # Import Content and Part types if you need more explicit control,
 # but the SDK often handles dict conversion automatically.
 # from google.ai import generativelanguage as glm
 
 # Define a type hint for the history structure for clarity
-ChatHistoryType = list[dict[str, str | list[str]]] # List of {'role': ..., 'parts': [...]}
-
+ChatHistoryType = list[
+    dict[str, str | list[str]]
+]  # List of {'role': ..., 'parts': [...]}
 
 def new_gemini_client(
     sys_prompt: str,
@@ -42,6 +47,10 @@ def new_gemini_client(
         google.api_core.exceptions.GoogleAPIError: If the API request fails for API-related reasons.
         Exception: For other potential errors during execution.
     """
+
+    # Record Function start time
+    start_time = time.time()
+
     # Load environment variables
     load_dotenv()
 
@@ -55,9 +64,7 @@ def new_gemini_client(
         raise ValueError(err_msg)
 
     try:
-        print(
-            "\n-------------------------------------------\nEntering new Agent Executioner chain (Updated SDK)..."
-        )
+        print("\n-------------------------------------------\n")
         print("running", handler_name)
 
         # Configure the API key
@@ -71,18 +78,13 @@ def new_gemini_client(
 
         # --- Model Selection ---
         # Experimental models (may change or require allowlisting)
-        # gemini_pro25 = "gemini-2.5-pro-exp-03-25"
-        # gemini_pro20 = "gemini-2.0-pro-exp-02-05"
-        # Generally available models
-        gemini_flash = "gemini-2.0-flash" # Good balance of speed and capability
-        # gemini_pro_15 = "gemini-1.5-pro-latest" # More capable
-        # gemini_pro_10 = "gemini-1.0-pro-latest" # Older, less capable but stable
+        models = ["gemini-2.0-flash", "gemini-2.5-pro-exp-03-25", "gemini-2.0-pro-exp-02-05"]
 
-        selected_model = gemini_flash # Defaulting to flash
+        selected_model = models[0]  # Defaulting to flash
 
         model = genai.GenerativeModel(
             model_name=selected_model,
-            system_instruction=enhanced_sys_prompt
+            system_instruction=enhanced_sys_prompt,
             # safety_settings=... # Optional: configure safety settings if needed
             # generation_config=... # Optional: default generation config can be set here
         )
@@ -96,8 +98,7 @@ def new_gemini_client(
         # Send the new user prompt to the ongoing chat session
         # Generation config can be passed here to override model defaults for this specific call
         response = chat_session.send_message(
-            user_prompt,
-            generation_config=genai.types.GenerationConfig(temperature=0.2)
+            user_prompt, generation_config=genai.types.GenerationConfig(temperature=0.2)
         )
 
         # --- Extract Response ---
@@ -110,31 +111,27 @@ def new_gemini_client(
         # We need to convert it back to the simple dict format if the caller expects that.
         updated_history_sdk_format = chat_session.history
         updated_history_dict_format: ChatHistoryType = [
-            {'role': msg.role, 'parts': [part.text for part in msg.parts]}
+            {"role": msg.role, "parts": [part.text for part in msg.parts]}
             for msg in updated_history_sdk_format
         ]
-
 
         # --- Logging ---
         # Log the context before the *latest* model response for brevity
         # The history used for the call includes the latest user prompt.
-        history_for_log_sdk = chat_session.history[:-1] # Exclude the last model response
-        # Convert parts to text for readable logging
-        history_for_log_str = [
-            {'role': msg.role, 'parts': [part.text for part in msg.parts]}
-            for msg in history_for_log_sdk
-        ]
 
-        log = (f"SYSTEM_PROMPT: {enhanced_sys_prompt} "
-               f"HISTORY_USED: {history_for_log_str} "
-               f"USER_PROMPT: {user_prompt} "
-               f"RESPONSE: {final_response}")
+        log = (
+            f"USER_PROMPT: {user_prompt} "
+            f"RESPONSE: {final_response}"
+        )
         log_entry(log, "info", file_path=file_path)
 
-        print("Exiting Agent Executioner chain (Updated SDK)...")
+        # Log function execution time:
+        performance_log = f"{handler_name} executed in {(time.time() - start_time):.4f} seconds"
+        print(performance_log)
 
         # Return the response text and the fully updated history
-        return final_response, updated_history_dict_format
+        debug_response = f"{response} \n `{' '.join(performance_log.split()[1:])}`"
+        return debug_response, updated_history_dict_format, performance_log
 
     # Catch more specific API errors if possible, fallback to generic Exception
     except (genai.APIError, Exception) as e:
@@ -144,4 +141,4 @@ def new_gemini_client(
         log_entry(err_msg, "error", file_path=file_path)
         # Re-raise the original exception or a custom one
         # Re-raising preserves the original stack trace which can be helpful
-        raise Exception(err_msg) from e # Chain the exception
+        raise Exception(err_msg) from e  # Chain the exception

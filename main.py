@@ -25,6 +25,20 @@ chat_histories_google_sdk = {}
 chat_histories_ai_google_sdk = {}
 chat_histories_poetry = {}
 
+# Configure discord.py logging level to INFO to avoid excessive DEBUG logs
+discord_logger = logging.getLogger('discord')
+discord_logger.setLevel(logging.WARNING)
+
+# Configure root logger to prevent *any* default console output
+root_logger = logging.getLogger()
+# Remove existing handlers (like the default StreamHandler to console)
+for h in root_logger.handlers[:]:
+    root_logger.removeHandler(h)
+# Set level high to prevent processing unless specific handlers are added
+root_logger.setLevel(logging.CRITICAL)
+
+# The FileHandler below will still work if added to a specific logger or the root logger later.
+
 load_dotenv()
 token = os.getenv("DISCORD_TOKEN")
 

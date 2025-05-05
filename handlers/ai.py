@@ -39,5 +39,5 @@ async def ai_handler(ctx, msg, chat_histories_ai_google_sdk):
         )
         print(e)
 
-    await ctx.reply(response)
+    await ctx.send(response)
 
