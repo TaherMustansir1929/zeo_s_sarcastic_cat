@@ -131,7 +131,7 @@ def new_gemini_client(
 
         # Return the response text and the fully updated history
         debug_response = f"{final_response} \n `{' '.join(performance_log.split()[1:])}`"
-        return debug_response, updated_history_dict_format, performance_log
+        return debug_response, updated_history_dict_format
 
     # Catch more specific API errors if possible, fallback to generic Exception
     except (genai.APIError, Exception) as e:
